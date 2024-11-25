@@ -45,7 +45,7 @@
 							<skipValidateSpec>true</skipValidateSpec>
 							<!-- specify the swagger yaml -->
 							<inputSpec>${project.basedir}/src/main/resources/api.yaml</inputSpec>
-
+							<!--<output>${project.basedir}/my-springboot</output>-->
 							<!-- target to generate java server code -->
 							<generatorName>spring</generatorName>
 
