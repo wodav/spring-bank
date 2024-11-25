@@ -9,3 +9,7 @@ https://editor.swagger.io
 
 Why Delegate Pattern
 https://stackoverflow.com/questions/66294655/significance-of-delegate-design-pattern-in-swagger-generated-code
+
+Swgger UI
+http://localhost:8080/swagger-ui/index.html#/
+
