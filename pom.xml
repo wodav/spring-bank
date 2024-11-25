@@ -62,7 +62,7 @@
 							<configOptions>
 								<serializableModel>true</serializableModel>
 								<snapshotVersion>true</snapshotVersion>
-								<delegatePattern>true</delegatePattern>
+								<interfaceOnly>true</interfaceOnly>
 								<useSpringBoot3>true</useSpringBoot3>
 							</configOptions>
 
@@ -92,6 +92,14 @@
 		</pluginRepository>
 	</pluginRepositories>
 	<dependencies>
+
+
+		<!-- ... other dependency elements ...
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -146,6 +154,12 @@
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
