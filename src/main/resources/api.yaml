@@ -243,6 +243,7 @@ components:
           readOnly: true
         account:
           type: array
+          readOnly: true
           items:
             $ref: '#/components/schemas/Account'
         firstName:
