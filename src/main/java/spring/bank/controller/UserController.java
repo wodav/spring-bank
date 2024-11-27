@@ -1,46 +1,41 @@
 package spring.bank.controller;
 
 
+import org.modelmapper.ModelMapper;
 import org.openapitools.api.UsersApi;
 
-import org.openapitools.dto.Role;
-import org.openapitools.dto.User;
+
+import org.openapitools.dto.UserDto;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
+import spring.bank.services.UserService;
 
-import java.util.List;
+import java.io.IOException;
 
 @RestController
 public class UserController implements UsersApi {
 
-    @Override
-    public ResponseEntity<User> createUser(User user){
-        return new ResponseEntity<>(user,HttpStatus.CREATED);
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    ModelMapper modelMapper;
+
+    @Transactional
+    public ResponseEntity<UserDto> createUser(UserDto userDto){
+
+        try {
+            userDto = userService.createUser(userDto);
+            return new ResponseEntity<>(userDto,HttpStatus.CREATED);
+        } catch (IOException e) {
+            return new ResponseEntity<>(userDto,HttpStatus.CONFLICT);
+        }
+
     }
 
-    @Override
-    public ResponseEntity<User> deleteUser(Integer id) {
-        return UsersApi.super.deleteUser(id);
-    }
 
-    @Override
-    public ResponseEntity<User> updateUser(Integer id, User user) {
-        return UsersApi.super.updateUser(id, user);
-    }
 
-    @Override
-    public ResponseEntity<User> usersFindByNameGet(String firstName, String lastName) {
-        return UsersApi.super.usersFindByNameGet(firstName, lastName);
-    }
-
-    @Override
-    public ResponseEntity<List<User>> usersGet() {
-        return UsersApi.super.usersGet();
-    }
-
-    @Override
-    public ResponseEntity<User> usersRoleGet(Role role) {
-        return UsersApi.super.usersRoleGet(role);
-    }
 }
