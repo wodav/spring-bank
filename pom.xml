@@ -55,6 +55,7 @@
 
 							<apiPackage>org.openapitools.api</apiPackage>
 							<modelPackage>org.openapitools.dto</modelPackage>
+							<modelNameSuffix>Dto</modelNameSuffix>
 
 
 
