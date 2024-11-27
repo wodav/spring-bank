@@ -140,12 +140,19 @@ paths:
         "204":
           description: user not found
 
-  /accounts:
+  /users/{id}/accounts:
     post:
       tags:
         - account
       summary: Create Account
       operationId: createAccount
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric Id of User
       requestBody:
         description: Account
         content:
@@ -161,8 +168,15 @@ paths:
                 $ref: '#/components/schemas/Account'
     get:
       tags:
-        - user
+        - account
       summary: Returns a list of account.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric Id of User
       description: Optional extended description in CommonMark or HTML
       responses:
         "200":
@@ -176,7 +190,23 @@ paths:
         "204":
           description: no accounts
 
-  /account/{id}:
+  /accounts:
+    get:
+      tags:
+        - account
+      summary: Returns a list of account.
+      description: Optional extended description in CommonMark or HTML
+      responses:
+        "200":
+          description: A JSON array of accounts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Account"
+        "204":
+          description: no accounts
     put:
       tags:
         - account
@@ -242,7 +272,7 @@ components:
           type: integer
           format: int64
           readOnly: true
-        account:
+        accounts:
           type: array
           readOnly: true
           items:
