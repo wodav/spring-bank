@@ -61,7 +61,7 @@ public class UserController implements UsersApi {
 
     @Override
     public ResponseEntity<List<UserDto>> usersGet() {
-        return UsersApi.super.usersGet();
+        return new ResponseEntity<>(userService.getAll(),HttpStatus.OK);
     }
 
     @Override

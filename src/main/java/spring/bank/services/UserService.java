@@ -11,6 +11,8 @@ import spring.bank.repositories.UserRepository;
 
 import java.io.IOException;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -53,5 +55,16 @@ public class UserService {
             userRepository.delete(user);
             return modelMapper.map(user,UserDto.class);
         }
+    }
+
+    @Transactional
+    public List<UserDto> getAll() {
+        List<User> users = userRepository.findAll();
+        List<UserDto> userDtoList = new ArrayList<>();
+        for(User user : users){
+            UserDto userDto = modelMapper.map(user,UserDto.class);
+            userDtoList.add(userDto);
+        }
+        return userDtoList;
     }
 }
