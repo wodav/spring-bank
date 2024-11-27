@@ -10,6 +10,7 @@ import spring.bank.entities.User;
 import spring.bank.repositories.UserRepository;
 
 import java.io.IOException;
+import java.time.OffsetDateTime;
 
 @Service
 public class UserService {
@@ -23,11 +24,15 @@ public class UserService {
     @Transactional
     public UserDto createUser(UserDto userDto) throws IOException {
 
-        if (userRepository.existsByFirstNameAndLastName(userDto.getFirstName(),userDto.getLastName())) { //TODO: add birthdate
+        if (userRepository.existsByFirstNameAndLastNameAndDateOfBirth(
+                userDto.getFirstName(),
+                userDto.getLastName(),
+                userDto.getDateOfBirth())) {
             throw  new IOException("Error: Combination of first name, last name and birth is already taken!");
         }
 
         User user = this.modelMapper.map(userDto,User.class);
+        user.setDateOfCreate(OffsetDateTime.now());
         user = userRepository.save(user);
         return this.modelMapper.map(user,UserDto.class);
     }

@@ -1,12 +1,10 @@
 package spring.bank.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.Valid;
-import org.openapitools.dto.AccountDto;
 import org.openapitools.dto.RoleDto;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(name="_USER") //table name "USER" is reserved
@@ -23,6 +21,8 @@ public class User {
 
     private String lastName;
 
+    private LocalDate dateOfBirth;
+
     private String email;
 
     private String password;
@@ -32,6 +32,8 @@ public class User {
     private Integer userStatus;
 
     private RoleDto role;
+
+    private OffsetDateTime dateOfCreate;
 
     public Long getId() {
         return id;
@@ -103,5 +105,21 @@ public class User {
 
     public void setRole(RoleDto role) {
         this.role = role;
+    }
+
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public OffsetDateTime getDateOfCreate() {
+        return dateOfCreate;
+    }
+
+    public void setDateOfCreate(OffsetDateTime dateOfCreate) {
+        this.dateOfCreate = dateOfCreate;
     }
 }

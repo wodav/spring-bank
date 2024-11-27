@@ -234,6 +234,7 @@ components:
       required:
         - firstName
         - lastName
+        - dateOfBirth
         - role
       type: object
       properties:
@@ -258,6 +259,10 @@ components:
           maxLength: 20
           pattern: '\p{L}+'
           example: James
+        dateOfBirth:
+          type: string
+          format: date
+          example: '1995-11-27'
         email:
           type: string
           example: example@mail.com
@@ -274,6 +279,10 @@ components:
           example: 1
         role:
           $ref: '#/components/schemas/Role'
+        dateOfCreate:
+          type: string
+          format: date-time
+          readOnly: true
 
       xml:
         name: user
