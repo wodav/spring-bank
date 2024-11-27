@@ -5,6 +5,7 @@ import org.modelmapper.ModelMapper;
 import org.openapitools.api.UsersApi;
 
 
+import org.openapitools.dto.AccountDto;
 import org.openapitools.dto.RoleDto;
 import org.openapitools.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,22 @@ public class UserController implements UsersApi {
 
     @Autowired
     ModelMapper modelMapper;
+
+    @Override
+    public ResponseEntity<List<AccountDto>> usersIdAccountsGet(Integer id) {
+        return UsersApi.super.usersIdAccountsGet(id);
+    }
+
+    @Override
+    public ResponseEntity<AccountDto> createAccount(Integer id, AccountDto accountDto) {
+
+        try {
+            accountDto = userService.createAccount(id, accountDto);
+            return new ResponseEntity<>(accountDto, HttpStatus.CREATED);
+        } catch (NullPointerException e) {
+            return new ResponseEntity<>(accountDto,HttpStatus.NO_CONTENT);
+        }
+    }
 
     @Transactional
     public ResponseEntity<UserDto> createUser(UserDto userDto){

@@ -1,12 +1,15 @@
 package spring.bank.services;
 
 import org.modelmapper.ModelMapper;
+import org.openapitools.dto.AccountDto;
 import org.openapitools.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import spring.bank.entities.Account;
 import spring.bank.entities.User;
+import spring.bank.repositories.AccountRepository;
 import spring.bank.repositories.UserRepository;
 
 import java.io.IOException;
@@ -20,6 +23,9 @@ public class UserService {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    AccountRepository accountRepository;
 
     @Autowired
     ModelMapper modelMapper;
@@ -66,5 +72,22 @@ public class UserService {
             userDtoList.add(userDto);
         }
         return userDtoList;
+    }
+
+    @Transactional
+    public AccountDto createAccount(Integer id, AccountDto accountDto) {
+
+        Optional<User> optionalUser= userRepository.findById(id.longValue());
+
+        if(optionalUser.isEmpty()){
+            throw new NullPointerException("User with id " + id + " not found");
+        }
+        else{
+            User user = optionalUser.get();
+            Account account = modelMapper.map(accountDto, Account.class);
+            account.setUser(user);
+            account = accountRepository.save(account);
+            return modelMapper.map(account, AccountDto.class);
+        }
     }
 }
