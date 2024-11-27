@@ -22,3 +22,8 @@ http://localhost:8080/swagger-ui/index.html#/
 
 Build interface and models from api.yaml
 mvn clean install
+
+
+# Libraries
+## Mapper
+userName - username
