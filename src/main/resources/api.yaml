@@ -4,6 +4,23 @@ info:
   version: v1
 paths:
   /users:
+    get:
+      tags:
+        - users
+        - user
+      summary: Returns a list of users.
+      description: Optional extended description in CommonMark or HTML
+      responses:
+        "200":
+          description: A JSON array of user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+        "204":
+          description: no users found
     post:
       tags:
         - user
@@ -25,24 +42,27 @@ paths:
                 $ref: '#/components/schemas/User'
         "409":
           description: user already exist
+
+  /users/{id}:
     get:
       tags:
         - user
-      summary: Returns a list of users.
-      description: Optional extended description in CommonMark or HTML
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric Id of User
       responses:
         "200":
-          description: A JSON array of user
+          description: user exists
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/User"
+                $ref: '#/components/schemas/User'
         "204":
-          description: no users found
-
-  /users/{id}:
+          description: user not found
     put:
       tags:
         - user
@@ -143,7 +163,7 @@ paths:
   /users/{id}/accounts:
     post:
       tags:
-        - account
+        - user
       summary: Create Account
       operationId: createAccount
       parameters:
@@ -168,7 +188,7 @@ paths:
                 $ref: '#/components/schemas/Account'
     get:
       tags:
-        - account
+        - user
       summary: Returns a list of account.
       parameters:
         - in: path
@@ -193,6 +213,7 @@ paths:
   /accounts:
     get:
       tags:
+        - accounts
         - account
       summary: Returns a list of account.
       description: Optional extended description in CommonMark or HTML
@@ -207,6 +228,22 @@ paths:
                   $ref: "#/components/schemas/Account"
         "204":
           description: no accounts
+
+  /accounts/{id}:
+    get:
+      tags:
+        - account
+      summary: Returns account.
+      description: Optional extended description in CommonMark or HTML
+      responses:
+        "200":
+          description: Return account by id
+          content:
+            application/json:
+              schema:
+                  $ref: "#/components/schemas/Account"
+        "204":
+          description: Account wit id not found
     put:
       tags:
         - account
@@ -253,7 +290,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/Account'
         "204":
           description: user not found
 
