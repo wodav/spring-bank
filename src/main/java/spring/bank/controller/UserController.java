@@ -24,9 +24,6 @@ public class UserController implements UsersApi {
     @Autowired
     UserService userService;
 
-    @Autowired
-    ModelMapper modelMapper;
-
     @Override
     public ResponseEntity<List<AccountDto>> usersIdAccountsGet(Integer id) {
         return UsersApi.super.usersIdAccountsGet(id);
