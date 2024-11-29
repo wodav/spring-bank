@@ -211,18 +211,18 @@ paths:
         "204":
           description: no accounts
 
-  /users/{id}/accounts/{id}/transactions:
+  /users/{user-id}/accounts/{account-id}/transactions:
     post:
       tags:
         - user transactions
       parameters:
         - in: path
-          name: users-id
+          name: user-id
           schema:
             type: integer
           required: true
         - in: path
-          name: accounts-id
+          name: account-id
           schema:
             type: integer
           required: true
