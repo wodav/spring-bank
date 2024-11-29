@@ -7,7 +7,6 @@ paths:
     get:
       tags:
         - users
-        - user
       summary: Returns a list of users.
       description: Optional extended description in CommonMark or HTML
       responses:
@@ -165,7 +164,7 @@ paths:
   /users/{id}/accounts:
     post:
       tags:
-        - user
+        - user accounts
       summary: Create Account
       operationId: createAccount
       parameters:
@@ -190,7 +189,7 @@ paths:
                 $ref: '#/components/schemas/Account'
     get:
       tags:
-        - user
+        - user accounts
       summary: Returns a list of account.
       parameters:
         - in: path
@@ -212,11 +211,62 @@ paths:
         "204":
           description: no accounts
 
+  /users/{id}/accounts/{id}/transactions:
+    post:
+      tags:
+        - user transactions
+      parameters:
+        - in: path
+          name: users-id
+          schema:
+            type: integer
+          required: true
+        - in: path
+          name: accounts-id
+          schema:
+            type: integer
+          required: true
+      responses:
+        "200":
+          description: Created transactions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Transaction"
+        "204":
+          description: transaction already exists
+    get:
+      tags:
+        - user transactions
+      parameters:
+        - in: path
+          name: users-id
+          schema:
+            type: integer
+          required: true
+        - in: path
+          name: accounts-id
+          schema:
+            type: integer
+          required: true
+      responses:
+        "200":
+          description: A JSON array of transactions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Transaction"
+        "204":
+          description: no transactions
+
   /accounts:
     get:
       tags:
         - accounts
-        - account
       summary: Returns a list of account.
       description: Optional extended description in CommonMark or HTML
       responses:
@@ -296,6 +346,23 @@ paths:
         "204":
           description: user not found
 
+  /transactions:
+    get:
+      tags:
+        - transactions
+      summary: Returns all transactions
+      description: Optional extended description in CommonMark or HTML
+      responses:
+        "200":
+          description: A JSON array of transactions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Transaction"
+        "204":
+          description: no transactions
 
 components:
   schemas:
@@ -369,6 +436,11 @@ components:
           type: integer
           format: int64
           readOnly: true
+        accounts:
+          type: array
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/Transaction'
         amount:
           type: integer
           format: int64
@@ -385,6 +457,42 @@ components:
         - user
         - bank employee
         - admin
+
+    Transaction:
+      required:
+        - destination
+        - amount
+        - currency
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+        accounts:
+          type: array
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/Account'
+        source:
+          type: string
+          readOnly: true
+        destination:
+          type: string
+          pattern: '\p{L}\p{L}-\p{L}{6}-[0-9]{6}'
+          example: 'DE-EXBANK-123456'
+        amount:
+          type: float
+          example: 20.00
+        currency:
+          type: string
+          example: 'EUR'
+        dateOfTransaction:
+          type: string
+          format: date-time
+          readOnly: true
+
+
+
 
 
 
