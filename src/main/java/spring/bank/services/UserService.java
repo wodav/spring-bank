@@ -48,7 +48,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserDto delete(Integer id) {
+    public UserDto delete(Integer id) throws IOException {
 
         Optional<User> optionalUser= userRepository.findById(id.longValue());
 
@@ -56,10 +56,17 @@ public class UserService {
             throw new NullPointerException("User with id " + id + " not found");
         }
         else {
-            //TODO: user.getAccounts should be empty throw exception and return Conflict
             User user = optionalUser.get();
-            userRepository.delete(user);
-            return modelMapper.map(user,UserDto.class);
+            if (user.getAccounts().isEmpty()){
+                userRepository.delete(user);
+                return modelMapper.map(user,UserDto.class);
+            }
+            else{
+                throw new IOException(
+                        "User with id " + id + " can not be deleted" +
+                        "Reason: User has accounts"
+                );
+            }
         }
     }
 

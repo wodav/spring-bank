@@ -60,6 +60,8 @@ public class UserController implements UsersApi {
             return new ResponseEntity<>(userDto,HttpStatus.OK);
         } catch (NullPointerException e){
             return new ResponseEntity<>(null,HttpStatus.NO_CONTENT);
+        } catch (IOException e){
+            return new ResponseEntity<>(null,HttpStatus.IM_USED);
         }
     }
 

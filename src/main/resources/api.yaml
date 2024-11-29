@@ -112,6 +112,8 @@ paths:
                 $ref: '#/components/schemas/User'
         "204":
           description: user not found
+        "226":
+            description: user has accounts
 
   /users/findByName:
     get:
