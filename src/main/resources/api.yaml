@@ -226,15 +226,18 @@ paths:
           schema:
             type: integer
           required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Transaction'
       responses:
         "200":
           description: Created transactions
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Transaction"
+                $ref: "#/components/schemas/Transaction"
         "204":
           description: transaction already exists
     get:
@@ -436,7 +439,7 @@ components:
           type: integer
           format: int64
           readOnly: true
-        accounts:
+        transactions:
           type: array
           readOnly: true
           items:

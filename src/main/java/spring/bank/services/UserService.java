@@ -2,14 +2,17 @@ package spring.bank.services;
 
 import org.modelmapper.ModelMapper;
 import org.openapitools.dto.AccountDto;
+import org.openapitools.dto.TransactionDto;
 import org.openapitools.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import spring.bank.entities.Account;
+import spring.bank.entities.Transaction;
 import spring.bank.entities.User;
 import spring.bank.repositories.AccountRepository;
+import spring.bank.repositories.TransactionRepository;
 import spring.bank.repositories.UserRepository;
 
 import java.io.IOException;
@@ -28,7 +31,29 @@ public class UserService {
     AccountRepository accountRepository;
 
     @Autowired
+    TransactionRepository transactionRepository;
+
+    @Autowired
     ModelMapper modelMapper;
+
+    @Transactional
+    public TransactionDto createTransaction(Integer userId, Integer accountId, TransactionDto transactionDto) {
+
+        Optional<Account> optionalAccount = accountRepository.findById(accountId.longValue());
+
+        if(optionalAccount.isEmpty()){
+            throw new NullPointerException("Account with id " + accountId + " not found");
+        }
+        else{
+            Account account = optionalAccount.get();
+            Transaction transaction = modelMapper.map(transactionDto, Transaction.class);
+            transaction.getAccounts().add(account);
+            transaction = transactionRepository.save(transaction);
+            account.getTransactions().add(transaction);
+            accountRepository.save(account); //TODO: Check if okay
+            return modelMapper.map(transaction,TransactionDto.class);
+        }
+    }
 
     @Transactional
     public UserDto createUser(UserDto userDto) throws IOException {

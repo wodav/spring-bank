@@ -7,6 +7,7 @@ import org.openapitools.api.UsersApi;
 
 import org.openapitools.dto.AccountDto;
 import org.openapitools.dto.RoleDto;
+import org.openapitools.dto.TransactionDto;
 import org.openapitools.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,6 +38,17 @@ public class UserController implements UsersApi {
             return new ResponseEntity<>(accountDto, HttpStatus.CREATED);
         } catch (NullPointerException e) {
             return new ResponseEntity<>(accountDto,HttpStatus.NO_CONTENT);
+        }
+    }
+
+    @Override
+    public ResponseEntity<TransactionDto> usersUserIdAccountsAccountIdTransactionsPost(Integer userId, Integer accountId, TransactionDto transactionDto) {
+        // TODO: mayebe to account/{id}/createTransaction
+        try {
+            transactionDto = userService.createTransaction(userId, accountId, transactionDto);
+            return new ResponseEntity<>(transactionDto,HttpStatus.OK);
+        }catch (NullPointerException e){
+            return new ResponseEntity<>(null,HttpStatus.NO_CONTENT);
         }
     }
 
