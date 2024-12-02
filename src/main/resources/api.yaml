@@ -240,6 +240,8 @@ paths:
                 $ref: "#/components/schemas/Transaction"
         "204":
           description: transaction already exists
+        "422":
+          description: Iban is not matching with destination name
     get:
       tags:
         - user transactions

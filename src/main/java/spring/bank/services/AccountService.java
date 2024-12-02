@@ -12,6 +12,7 @@ import spring.bank.repositories.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -84,5 +85,15 @@ public class AccountService {
         else {
             return topAccountNumberOptional.get().getAccountNumber();
         }
+    }
+
+    public boolean validate(Account destinationAccount, String destinationName) {
+
+        return Objects.equals(destinationName, destinationAccount.getUser().getFirstName() + " " + destinationAccount.getUser().getLastName());
+
+    }
+
+    public boolean isSourceBankEqualsDestinationBank(String destinationIban) {
+        return true;//TODO regex threw iban and check
     }
 }

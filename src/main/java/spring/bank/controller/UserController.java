@@ -18,6 +18,7 @@ import spring.bank.services.UserService;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 public class UserController implements UsersApi {
@@ -49,6 +50,13 @@ public class UserController implements UsersApi {
             return new ResponseEntity<>(transactionDto,HttpStatus.OK);
         }catch (NullPointerException e){
             return new ResponseEntity<>(null,HttpStatus.NO_CONTENT);
+        }catch (IOException e){
+            if(Objects.equals(e.getMessage(), "Iban and user name are not matching")){
+                return new ResponseEntity<>(null,HttpStatus.UNPROCESSABLE_ENTITY);
+            }
+            else {
+                return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
+            }
         }
     }
 
