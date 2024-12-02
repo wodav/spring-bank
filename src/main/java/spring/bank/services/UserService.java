@@ -41,43 +41,63 @@ public class UserService {
     private final ChronoUnit truncateDateOfCreation = ChronoUnit.SECONDS;
 
     @Transactional
-    public TransactionDto createTransaction(Integer userId, Integer accountId, TransactionDto transactionDto) {
+    public TransactionDto createTransaction(Integer userId, Integer accountId, TransactionDto transactionDto) throws IOException {
 
         Optional<Account> optionalSourceAccount = accountRepository.findById(accountId.longValue());
-        Optional<Account> optionalDestinationAccount = accountRepository.findByIban(transactionDto.getDestinationIban());
-        //Validate name with iban
-        if(optionalSourceAccount.isEmpty()){
+
+        if(optionalSourceAccount.isEmpty()) {
             throw new NullPointerException("Account with id " + accountId + " not found");
-        } else if (optionalDestinationAccount.isEmpty()) {
-            //TODO proof if bank is same: if not make rest call to different bank or create a main iban bank
-            throw new NullPointerException("Account with id " + accountId + " not found");
-        } else{
-            Account sourceAccount = optionalSourceAccount.get();
-            Account destinationAccount = optionalDestinationAccount.get();
+        }
 
-            User sourceUser = sourceAccount.getUser();
+        String destinationIban = transactionDto.getDestinationIban();
 
-            String sourceName = sourceUser.getFirstName() + " " + sourceUser.getLastName();
-            String sourceIban = sourceAccount.getIban();
+        Account destinationAccount = null;
+        boolean sourceBankIsEqualsDestinationBank = accountService.isSourceBankEqualsDestinationBank(destinationIban);
 
-            Transaction transaction = modelMapper.map(transactionDto, Transaction.class);
+        if(sourceBankIsEqualsDestinationBank) {
 
-            transaction.getAccounts().add(sourceAccount);
-            transaction.setDateOfCreation(OffsetDateTime.now().truncatedTo(truncateDateOfCreation));
-            transaction.setSourceName(sourceName);
-            transaction.setSourceIban(sourceIban);
-            transaction = transactionRepository.save(transaction);
+            Optional<Account> optionalDestinationAccount = accountRepository.findByIban(destinationIban);
+            destinationAccount = optionalDestinationAccount.get();
+            if (optionalDestinationAccount.isEmpty()) {
+                throw new NullPointerException("Account with iban " + destinationIban + " not found");
+            }
+        }else {
+            //TODO: RESTCALL To Iban Provider
+        }
 
-            sourceAccount.getTransactions().add(transaction);
-            accountRepository.save(sourceAccount);
+        Account sourceAccount = optionalSourceAccount.get();
+
+
+        if(!accountService.validate(destinationAccount, transactionDto.getDestinationName())) {
+            throw new IOException("Iban and user name are not matching");
+        }
+
+        User sourceUser = sourceAccount.getUser();
+
+        String sourceName = sourceUser.getFirstName() + " " + sourceUser.getLastName();
+        String sourceIban = sourceAccount.getIban();
+
+        Transaction transaction = modelMapper.map(transactionDto, Transaction.class);
+
+        transaction.getAccounts().add(sourceAccount);
+        transaction.setDateOfCreation(OffsetDateTime.now().truncatedTo(truncateDateOfCreation));
+        transaction.setSourceName(sourceName);
+        transaction.setSourceIban(sourceIban);
+        transaction = transactionRepository.save(transaction);
+
+        sourceAccount.getTransactions().add(transaction);
+        accountRepository.save(sourceAccount);
+
+        if(sourceBankIsEqualsDestinationBank) {
             destinationAccount.getTransactions().add(transaction);
             accountRepository.save(destinationAccount);
-
-            transactionDto = modelMapper.map(transaction,TransactionDto.class);
-
-            //TODO:Logic FutureTransaction
-            return transactionDto;
         }
+
+        transactionDto = modelMapper.map(transaction,TransactionDto.class);
+
+        //TODO:Logic FutureTransaction
+        return transactionDto;
+
     }
 
     @Transactional
