@@ -54,6 +54,9 @@ public class UserController implements UsersApi {
             if(Objects.equals(e.getMessage(), "Iban and user name are not matching")){
                 return new ResponseEntity<>(null,HttpStatus.UNPROCESSABLE_ENTITY);
             }
+            if(Objects.equals(e.getMessage(), "Iban is not valid from validation algorithm")){
+                return new ResponseEntity<>(null,HttpStatus.UNPROCESSABLE_ENTITY);
+            }
             else {
                 return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
             }

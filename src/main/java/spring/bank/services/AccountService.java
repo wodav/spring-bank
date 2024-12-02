@@ -3,7 +3,6 @@ package spring.bank.services;
 import org.modelmapper.ModelMapper;
 import org.openapitools.dto.AccountDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import spring.bank.entities.Account;
@@ -23,15 +22,6 @@ public class AccountService {
 
     @Autowired
     ModelMapper modelMapper;
-
-    @Value("${iban.countrycode}")
-    String ibanCountryCode;
-
-    @Value("${iban.checkdigits}")
-    String ibanCheckDigits;
-
-    @Value("${iban.bankcode}")
-    String ibanBankCode;
 
     public AccountDto delete(Integer id) {
 
@@ -61,16 +51,6 @@ public class AccountService {
         return accountDtoList;
     }
 
-    public String buildIban(Integer accountNumber) {
-
-        String formattedAccountNumber = String.format("%06d", accountNumber);
-
-        return ibanCountryCode
-                + ibanCheckDigits
-                + ibanBankCode
-                + formattedAccountNumber;
-    }
-
     //TODO: Safe highest iban in extra value. If account gets deleted account number will given away again!
     public Integer getHighestAccountNumber() {
 
@@ -90,14 +70,4 @@ public class AccountService {
 
     }
 
-    public boolean isSourceBankEqualsDestinationBank(String destinationIban) {
-
-        char[] destinationBankChar = new char[12];
-        destinationIban.getChars(0,12, destinationBankChar,0);
-
-        String sourceBank = ibanCountryCode+ibanCheckDigits+ibanBankCode;
-        String destinationBank = String.valueOf(destinationBankChar);
-
-        return Objects.equals(destinationBank, sourceBank);
-    }
 }

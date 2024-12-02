@@ -1,5 +1,6 @@
 package spring.bank.services;
 
+import org.hibernate.boot.model.naming.ImplicitBasicColumnNameSource;
 import org.modelmapper.ModelMapper;
 import org.openapitools.dto.AccountDto;
 import org.openapitools.dto.TransactionDto;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import spring.bank.calculation.Iban;
 import spring.bank.entities.Account;
 import spring.bank.entities.Transaction;
 import spring.bank.entities.User;
@@ -43,30 +45,37 @@ public class UserService {
     @Transactional
     public TransactionDto createTransaction(Integer userId, Integer accountId, TransactionDto transactionDto) throws IOException {
 
+        Account sourceAccount = null;
+        Account destinationAccount = null;
+
+        String destinationIban = transactionDto.getDestinationIban();
         Optional<Account> optionalSourceAccount = accountRepository.findById(accountId.longValue());
+
+        boolean ibanIsNotValid = !Iban.validate(destinationIban);
+        boolean sourceBankIsEqualsDestinationBank = Iban.isSourceBankEqualsDestinationBank(destinationIban);
 
         if(optionalSourceAccount.isEmpty()) {
             throw new NullPointerException("Account with id " + accountId + " not found");
+        }else{
+            sourceAccount = optionalSourceAccount.get();
         }
 
-        String destinationIban = transactionDto.getDestinationIban();
-
-        Account destinationAccount = null;
-        boolean sourceBankIsEqualsDestinationBank = accountService.isSourceBankEqualsDestinationBank(destinationIban);
+        if(ibanIsNotValid){
+            throw new IOException("Iban is not valid from validation algorithm");
+        }
 
         if(sourceBankIsEqualsDestinationBank) {
 
             Optional<Account> optionalDestinationAccount = accountRepository.findByIban(destinationIban);
             if (optionalDestinationAccount.isEmpty()) {
                 throw new NullPointerException("Account with iban " + destinationIban + " not found");
+            }else{
+                destinationAccount = optionalDestinationAccount.get();
             }
-            destinationAccount = optionalDestinationAccount.get();
 
         }else {
             //TODO: RESTCALL To Iban Provider
         }
-
-        Account sourceAccount = optionalSourceAccount.get();
 
 
         if(!accountService.validate(destinationAccount, transactionDto.getDestinationName())) {
@@ -177,7 +186,7 @@ public class UserService {
             Integer nextAccountNumber = accountService.getHighestAccountNumber() + 1;
 
             account.setAmount(0.00f);
-            account.setIban(accountService.buildIban(nextAccountNumber));
+            account.setIban(Iban.build(nextAccountNumber));
             account.setAccountNumber(nextAccountNumber);
             account.setDateOfCreation(OffsetDateTime.now().truncatedTo(truncateDateOfCreation));
 
