@@ -1,7 +1,9 @@
 package spring.bank.entities;
 
 import jakarta.persistence.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -22,11 +24,17 @@ public class Account {
             inverseJoinColumns = @JoinColumn(name = "transaction_id"))
     private Set<Transaction> transactions;
 
-    private Long amount;
+    private String iban;
+
+    private Integer accountNumber;
+
+    private Float amount;
 
     private String currency;
 
     private Boolean isMain;
+
+    private OffsetDateTime dateOfCreation;
 
     public Long getId() {
         return id;
@@ -44,11 +52,35 @@ public class Account {
         this.user = user;
     }
 
-    public Long getAmount() {
+    public Set<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(Set<Transaction> transactions) {
+        this.transactions = transactions;
+    }
+
+    public String getIban() {
+        return iban;
+    }
+
+    public void setIban(String iban) {
+        this.iban = iban;
+    }
+
+    public Integer getAccountNumber() {
+        return accountNumber;
+    }
+
+    public void setAccountNumber(Integer accountNumber) {
+        this.accountNumber = accountNumber;
+    }
+
+    public Float getAmount() {
         return amount;
     }
 
-    public void setAmount(Long amount) {
+    public void setAmount(Float amount) {
         this.amount = amount;
     }
 
@@ -68,11 +100,11 @@ public class Account {
         isMain = main;
     }
 
-    public Set<Transaction> getTransactions() {
-        return transactions;
+    public OffsetDateTime getDateOfCreation() {
+        return dateOfCreation;
     }
 
-    public void setTransactions(Set<Transaction> transactions) {
-        this.transactions = transactions;
+    public void setDateOfCreation(OffsetDateTime dateOfCreation) {
+        this.dateOfCreation = dateOfCreation;
     }
 }

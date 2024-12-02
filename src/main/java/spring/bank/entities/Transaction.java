@@ -23,13 +23,21 @@ public class Transaction {
 
     private String source;
 
-    private String destination;
+    private String destinationName;
+
+    private String destinationIban;
+
+    private String destinationBIC;
 
     private Float amount = null;
 
     private String currency;
 
-    private OffsetDateTime dateOfTransaction;
+    private String purposeOfUse;
+
+    private OffsetDateTime dateOfFutureTransaction;
+
+    private OffsetDateTime dateOfCreation;
 
     public Long getId() {
         return id;
@@ -55,12 +63,28 @@ public class Transaction {
         this.source = source;
     }
 
-    public String getDestination() {
-        return destination;
+    public String getDestinationName() {
+        return destinationName;
     }
 
-    public void setDestination(String destination) {
-        this.destination = destination;
+    public void setDestinationName(String destinationName) {
+        this.destinationName = destinationName;
+    }
+
+    public String getDestinationIban() {
+        return destinationIban;
+    }
+
+    public void setDestinationIban(String destinationIban) {
+        this.destinationIban = destinationIban;
+    }
+
+    public String getDestinationBIC() {
+        return destinationBIC;
+    }
+
+    public void setDestinationBIC(String destinationBIC) {
+        this.destinationBIC = destinationBIC;
     }
 
     public Float getAmount() {
@@ -79,11 +103,27 @@ public class Transaction {
         this.currency = currency;
     }
 
-    public OffsetDateTime getDateOfTransaction() {
-        return dateOfTransaction;
+    public String getPurposeOfUse() {
+        return purposeOfUse;
     }
 
-    public void setDateOfTransaction(OffsetDateTime dateOfTransaction) {
-        this.dateOfTransaction = dateOfTransaction;
+    public void setPurposeOfUse(String purposeOfUse) {
+        this.purposeOfUse = purposeOfUse;
+    }
+
+    public OffsetDateTime getDateOfFutureTransaction() {
+        return dateOfFutureTransaction;
+    }
+
+    public void setDateOfFutureTransaction(OffsetDateTime dateOfFutureTransaction) {
+        this.dateOfFutureTransaction = dateOfFutureTransaction;
+    }
+
+    public OffsetDateTime getDateOfCreation() {
+        return dateOfCreation;
+    }
+
+    public void setDateOfCreation(OffsetDateTime dateOfCreation) {
+        this.dateOfCreation = dateOfCreation;
     }
 }

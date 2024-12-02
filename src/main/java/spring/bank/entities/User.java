@@ -35,7 +35,7 @@ public class User {
 
     private RoleDto role;
 
-    private OffsetDateTime dateOfCreate;
+    private OffsetDateTime dateOfCreation;
 
     public Long getId() {
         return id;
@@ -109,12 +109,12 @@ public class User {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public OffsetDateTime getDateOfCreate() {
-        return dateOfCreate;
+    public OffsetDateTime getDateOfCreation() {
+        return dateOfCreation;
     }
 
-    public void setDateOfCreate(OffsetDateTime dateOfCreate) {
-        this.dateOfCreate = dateOfCreate;
+    public void setDateOfCreation(OffsetDateTime dateOfCreation) {
+        this.dateOfCreation = dateOfCreation;
     }
 
     public List<Account> getAccounts() {
