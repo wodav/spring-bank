@@ -1,6 +1,7 @@
 package spring.bank.services;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
 import org.openapitools.dto.AccountDto;
 import org.openapitools.dto.TransactionDto;
 import org.openapitools.dto.UserDto;
@@ -17,9 +18,7 @@ import spring.bank.repositories.UserRepository;
 
 import java.io.IOException;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -50,8 +49,11 @@ public class UserService {
             transaction.getAccounts().add(account);
             transaction = transactionRepository.save(transaction);
             account.getTransactions().add(transaction);
-            accountRepository.save(account); //TODO: Check if okay
-            return modelMapper.map(transaction,TransactionDto.class);
+            accountRepository.save(account);
+
+            transactionDto = modelMapper.map(transaction,TransactionDto.class);
+
+            return transactionDto;
         }
     }
 
@@ -97,12 +99,22 @@ public class UserService {
 
     @Transactional
     public List<UserDto> getAll() {
+
         List<User> users = userRepository.findAll();
         List<UserDto> userDtoList = new ArrayList<>();
+
         for(User user : users){
+            List<AccountDto> accountDtos = new ArrayList<>();
+
+            for(Account account : user.getAccounts()){
+                AccountDto accountDto = modelMapper.map(account, AccountDto.class);
+                accountDtos.add(accountDto);
+            }
             UserDto userDto = modelMapper.map(user,UserDto.class);
+            userDto.accounts(accountDtos);
             userDtoList.add(userDto);
         }
+
         return userDtoList;
     }
 

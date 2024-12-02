@@ -1,5 +1,6 @@
 package spring.bank.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import org.openapitools.dto.AccountDto;
