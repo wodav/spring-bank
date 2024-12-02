@@ -57,10 +57,11 @@ public class UserService {
         if(sourceBankIsEqualsDestinationBank) {
 
             Optional<Account> optionalDestinationAccount = accountRepository.findByIban(destinationIban);
-            destinationAccount = optionalDestinationAccount.get();
             if (optionalDestinationAccount.isEmpty()) {
                 throw new NullPointerException("Account with iban " + destinationIban + " not found");
             }
+            destinationAccount = optionalDestinationAccount.get();
+
         }else {
             //TODO: RESTCALL To Iban Provider
         }
