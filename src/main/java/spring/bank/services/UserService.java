@@ -1,7 +1,6 @@
 package spring.bank.services;
 
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
 import org.openapitools.dto.AccountDto;
 import org.openapitools.dto.TransactionDto;
 import org.openapitools.dto.UserDto;
@@ -18,10 +17,14 @@ import spring.bank.repositories.UserRepository;
 
 import java.io.IOException;
 import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @Service
 public class UserService {
+
+    @Autowired
+    AccountService accountService;
 
     @Autowired
     UserRepository userRepository;
@@ -35,6 +38,8 @@ public class UserService {
     @Autowired
     ModelMapper modelMapper;
 
+    private final ChronoUnit truncateDateOfCreation = ChronoUnit.SECONDS;
+
     @Transactional
     public TransactionDto createTransaction(Integer userId, Integer accountId, TransactionDto transactionDto) {
 
@@ -46,13 +51,14 @@ public class UserService {
         else{
             Account account = optionalAccount.get();
             Transaction transaction = modelMapper.map(transactionDto, Transaction.class);
+            transaction.setDateOfCreation(OffsetDateTime.now().truncatedTo(truncateDateOfCreation));
             transaction.getAccounts().add(account);
             transaction = transactionRepository.save(transaction);
             account.getTransactions().add(transaction);
             accountRepository.save(account);
 
             transactionDto = modelMapper.map(transaction,TransactionDto.class);
-
+            //TODO:Logic FutureTransaction
             return transactionDto;
         }
     }
@@ -68,7 +74,7 @@ public class UserService {
         }
         else {
             User user = this.modelMapper.map(userDto,User.class);
-            user.setDateOfCreate(OffsetDateTime.now());
+            user.setDateOfCreation(OffsetDateTime.now().truncatedTo(truncateDateOfCreation));
             user = userRepository.save(user);
             return this.modelMapper.map(user,UserDto.class);
         }
@@ -129,6 +135,14 @@ public class UserService {
         else{
             User user = optionalUser.get();
             Account account = modelMapper.map(accountDto, Account.class);
+
+            Integer nextAccountNumber = accountService.getHighestAccountNumber() + 1;
+
+            account.setAmount(0.00f);
+            account.setIban(accountService.buildIban(nextAccountNumber));
+            account.setAccountNumber(nextAccountNumber);
+            account.setDateOfCreation(OffsetDateTime.now().truncatedTo(truncateDateOfCreation));
+
             account.setUser(user);
             account = accountRepository.save(account);
             return modelMapper.map(account, AccountDto.class);
