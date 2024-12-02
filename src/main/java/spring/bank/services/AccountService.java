@@ -10,10 +10,7 @@ import spring.bank.entities.Account;
 import spring.bank.repositories.AccountRepository;
 import spring.bank.repositories.UserRepository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class AccountService {
@@ -94,6 +91,13 @@ public class AccountService {
     }
 
     public boolean isSourceBankEqualsDestinationBank(String destinationIban) {
-        return true;//TODO regex threw iban and check
+
+        char[] destinationBankChar = new char[12];
+        destinationIban.getChars(0,12, destinationBankChar,0);
+
+        String sourceBank = ibanCountryCode+ibanCheckDigits+ibanBankCode;
+        String destinationBank = String.valueOf(destinationBankChar);
+
+        return Objects.equals(destinationBank, sourceBank);
     }
 }

@@ -71,20 +71,22 @@ public class BankApplication implements CommandLineRunner {
 
 		JSONObject transactionDto = new JSONObject();
 
-		accountDto.put("destinationName", "John James");
-		accountDto.put("destinationIban", "DE9111111111000001");
-		accountDto.put("amount", 570);
-		accountDto.put("currency", "EUR");
-		accountDto.put("purposeOfUse", "Miete Januar");
+		transactionDto.put("destinationName", "John James");
+		transactionDto.put("destinationIban", "DE9111111111000001");
+		transactionDto.put("amount", 570);
+		transactionDto.put("currency", "EUR");
+		transactionDto.put("purposeOfUse", "Miete Januar");
 
+		httpEntity = new HttpEntity<>(transactionDto);
 		response = restTemplate.exchange(uri+"/users/2/accounts/4/transactions", HttpMethod.POST, httpEntity, AccountDto.class);
 
-		accountDto.put("destinationName", "John James");
-		accountDto.put("destinationIban", "DE9111111111000003");
-		accountDto.put("amount", 320);
-		accountDto.put("currency", "EUR");
-		accountDto.put("purposeOfUse", "GEZ");
+		transactionDto.put("destinationName", "John James");
+		transactionDto.put("destinationIban", "DE9111111111000003");
+		transactionDto.put("amount", 320);
+		transactionDto.put("currency", "EUR");
+		transactionDto.put("purposeOfUse", "GEZ");
 
+		httpEntity = new HttpEntity<>(transactionDto);
 		response = restTemplate.exchange(uri+"/users/2/accounts/4/transactions", HttpMethod.POST, httpEntity, AccountDto.class);
 	}
 
