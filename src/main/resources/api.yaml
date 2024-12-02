@@ -418,7 +418,7 @@ components:
           example: 1
         role:
           $ref: '#/components/schemas/Role'
-        dateOfCreate:
+        dateOfCreation:
           type: string
           format: date-time
           readOnly: true
@@ -444,15 +444,26 @@ components:
           readOnly: true
           items:
             $ref: '#/components/schemas/Transaction'
-        amount:
+        iban:
+          type: string
+          readOnly: true
+        accountNumber:
           type: integer
-          format: int64
+          pattern: '[0-9]{8}'
+          readOnly: true
+        amount:
+          type: float
+          readOnly: true
         currency:
           type: string
           example: 'EUR'
         isMain:
           type: boolean
           example: true
+        dateOfCreation:
+          type: string
+          format: date-time
+          readOnly: true
 
     Role:
       type: string
@@ -463,9 +474,11 @@ components:
 
     Transaction:
       required:
-        - destination
+        - destinationName
+        - destinationIban
         - amount
         - currency
+        - purposeOfUse
       properties:
         id:
           type: integer
@@ -479,17 +492,31 @@ components:
         source:
           type: string
           readOnly: true
-        destination:
+        destinationName:
           type: string
-          pattern: '\p{L}\p{L}-\p{L}{6}-[0-9]{6}'
-          example: 'DE-EXBANK-123456'
+          pattern: '[a-zA-Z\s]+'
+          example: 'John Adams'
+        destinationIban:
+          type: string
+          pattern: '\p{L}{2}[0-9]{16}'
+          example: 'DE9111111111000001'
+        destinationBIC:
+          type: string
+          readOnly: true
         amount:
           type: float
-          example: 20.00
+          example: 570.00
         currency:
           type: string
           example: 'EUR'
+        purposeOfUse:
+          type: string
+          example: 'Miete Januar'
         dateOfTransaction:
+          type: string
+          format: date-time
+          example: '2024-12-02T18:00:00+01:00'
+        dateOfCreation:
           type: string
           format: date-time
           readOnly: true
