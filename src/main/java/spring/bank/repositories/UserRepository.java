@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import spring.bank.entities.User;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {

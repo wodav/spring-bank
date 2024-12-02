@@ -489,7 +489,10 @@ components:
           readOnly: true
           items:
             $ref: '#/components/schemas/Account'
-        source:
+        sourceName:
+          type: string
+          readOnly: true
+        sourceIban:
           type: string
           readOnly: true
         destinationName:

@@ -43,21 +43,38 @@ public class UserService {
     @Transactional
     public TransactionDto createTransaction(Integer userId, Integer accountId, TransactionDto transactionDto) {
 
-        Optional<Account> optionalAccount = accountRepository.findById(accountId.longValue());
-
-        if(optionalAccount.isEmpty()){
+        Optional<Account> optionalSourceAccount = accountRepository.findById(accountId.longValue());
+        Optional<Account> optionalDestinationAccount = accountRepository.findByIban(transactionDto.getDestinationIban());
+        //Validate name with iban
+        if(optionalSourceAccount.isEmpty()){
             throw new NullPointerException("Account with id " + accountId + " not found");
-        }
-        else{
-            Account account = optionalAccount.get();
+        } else if (optionalDestinationAccount.isEmpty()) {
+            //TODO proof if bank is same: if not make rest call to different bank or create a main iban bank
+            throw new NullPointerException("Account with id " + accountId + " not found");
+        } else{
+            Account sourceAccount = optionalSourceAccount.get();
+            Account destinationAccount = optionalDestinationAccount.get();
+
+            User sourceUser = sourceAccount.getUser();
+
+            String sourceName = sourceUser.getFirstName() + " " + sourceUser.getLastName();
+            String sourceIban = sourceAccount.getIban();
+
             Transaction transaction = modelMapper.map(transactionDto, Transaction.class);
+
+            transaction.getAccounts().add(sourceAccount);
             transaction.setDateOfCreation(OffsetDateTime.now().truncatedTo(truncateDateOfCreation));
-            transaction.getAccounts().add(account);
+            transaction.setSourceName(sourceName);
+            transaction.setSourceIban(sourceIban);
             transaction = transactionRepository.save(transaction);
-            account.getTransactions().add(transaction);
-            accountRepository.save(account);
+
+            sourceAccount.getTransactions().add(transaction);
+            accountRepository.save(sourceAccount);
+            destinationAccount.getTransactions().add(transaction);
+            accountRepository.save(destinationAccount);
 
             transactionDto = modelMapper.map(transaction,TransactionDto.class);
+
             //TODO:Logic FutureTransaction
             return transactionDto;
         }

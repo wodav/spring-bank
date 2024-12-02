@@ -1,14 +1,8 @@
 package spring.bank.entities;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import jakarta.validation.Valid;
-import org.openapitools.dto.AccountDto;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -21,7 +15,9 @@ public class Transaction {
     @ManyToMany(mappedBy = "transactions")
     private Set<Account> accounts;
 
-    private String source;
+    private String sourceName;
+
+    private String sourceIban;
 
     private String destinationName;
 
@@ -47,20 +43,20 @@ public class Transaction {
         this.id = id;
     }
 
-    public Set<Account> getAccounts() {
-        return accounts;
+    public String getSourceName() {
+        return sourceName;
     }
 
-    public void setAccounts(Set<Account> accounts) {
-        this.accounts = accounts;
+    public void setSourceName(String sourceName) {
+        this.sourceName = sourceName;
     }
 
-    public String getSource() {
-        return source;
+    public String getSourceIban() {
+        return sourceIban;
     }
 
-    public void setSource(String source) {
-        this.source = source;
+    public void setSourceIban(String sourceIban) {
+        this.sourceIban = sourceIban;
     }
 
     public String getDestinationName() {
@@ -125,5 +121,13 @@ public class Transaction {
 
     public void setDateOfCreation(OffsetDateTime dateOfCreation) {
         this.dateOfCreation = dateOfCreation;
+    }
+
+    public Set<Account> getAccounts() {
+        return accounts;
+    }
+
+    public void setAccounts(Set<Account> accounts) {
+        this.accounts = accounts;
     }
 }

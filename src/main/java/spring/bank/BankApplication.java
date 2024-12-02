@@ -27,6 +27,8 @@ public class BankApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
+		String uri = "http://localhost:8080";
+
 		JSONObject userDto = new JSONObject();
 
 		userDto.put("firstName", "John");
@@ -39,7 +41,21 @@ public class BankApplication implements CommandLineRunner {
 		userDto.put("role", "user");
 
 		HttpEntity<JSONObject> httpEntity = new HttpEntity<>(userDto);
-		ResponseEntity response = restTemplate.exchange("http://localhost:8080/users", HttpMethod.POST, httpEntity, UserDto.class);
+		ResponseEntity response = restTemplate.exchange(uri+"/users", HttpMethod.POST, httpEntity, UserDto.class);
+
+		userDto = new JSONObject();
+
+		userDto.put("firstName", "Adam");
+		userDto.put("lastName", "Adams");
+		userDto.put("dateOfBirth", "2024-12-02");
+		userDto.put("email", "example@mail.com");
+		userDto.put("password", "12345");
+		userDto.put("phone", "12345");
+		userDto.put("userStatus", 1);
+		userDto.put("role", "user");
+
+		httpEntity = new HttpEntity<>(userDto);
+		response = restTemplate.exchange(uri+"/users", HttpMethod.POST, httpEntity, UserDto.class);
 
 		JSONObject accountDto = new JSONObject();
 
@@ -47,12 +63,29 @@ public class BankApplication implements CommandLineRunner {
 		accountDto.put(	"isMain", true);
 
 		httpEntity = new HttpEntity<>(accountDto);
-		response = restTemplate.exchange("http://localhost:8080/users/1/accounts", HttpMethod.POST, httpEntity, AccountDto.class);
-		response = restTemplate.exchange("http://localhost:8080/users/1/accounts", HttpMethod.POST, httpEntity, AccountDto.class);
-		response = restTemplate.exchange("http://localhost:8080/users/1/accounts", HttpMethod.POST, httpEntity, AccountDto.class);
+		response = restTemplate.exchange(uri+"/users/1/accounts", HttpMethod.POST, httpEntity, AccountDto.class);
+		response = restTemplate.exchange(uri+"/users/1/accounts", HttpMethod.POST, httpEntity, AccountDto.class);
+		response = restTemplate.exchange(uri+"/users/1/accounts", HttpMethod.POST, httpEntity, AccountDto.class);
 
+		response = restTemplate.exchange(uri+"/users/2/accounts", HttpMethod.POST, httpEntity, AccountDto.class);
 
+		JSONObject transactionDto = new JSONObject();
 
+		accountDto.put("destinationName", "John James");
+		accountDto.put("destinationIban", "DE9111111111000001");
+		accountDto.put("amount", 570);
+		accountDto.put("currency", "EUR");
+		accountDto.put("purposeOfUse", "Miete Januar");
+
+		response = restTemplate.exchange(uri+"/users/2/accounts/4/transactions", HttpMethod.POST, httpEntity, AccountDto.class);
+
+		accountDto.put("destinationName", "John James");
+		accountDto.put("destinationIban", "DE9111111111000003");
+		accountDto.put("amount", 320);
+		accountDto.put("currency", "EUR");
+		accountDto.put("purposeOfUse", "GEZ");
+
+		response = restTemplate.exchange(uri+"/users/2/accounts/4/transactions", HttpMethod.POST, httpEntity, AccountDto.class);
 	}
 
 }

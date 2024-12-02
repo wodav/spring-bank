@@ -1,10 +1,8 @@
 package spring.bank.entities;
 
 import jakarta.persistence.*;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.OffsetDateTime;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -52,13 +50,7 @@ public class Account {
         this.user = user;
     }
 
-    public Set<Transaction> getTransactions() {
-        return transactions;
-    }
 
-    public void setTransactions(Set<Transaction> transactions) {
-        this.transactions = transactions;
-    }
 
     public String getIban() {
         return iban;
@@ -106,5 +98,13 @@ public class Account {
 
     public void setDateOfCreation(OffsetDateTime dateOfCreation) {
         this.dateOfCreation = dateOfCreation;
+    }
+
+    public Set<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(Set<Transaction> transactions) {
+        this.transactions = transactions;
     }
 }
