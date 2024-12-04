@@ -1,6 +1,5 @@
 package spring.bank.services;
 
-import org.hibernate.boot.model.naming.ImplicitBasicColumnNameSource;
 import org.modelmapper.ModelMapper;
 import org.openapitools.dto.AccountDto;
 import org.openapitools.dto.TransactionDto;
@@ -35,80 +34,9 @@ public class UserService {
     AccountRepository accountRepository;
 
     @Autowired
-    TransactionRepository transactionRepository;
-
-    @Autowired
     ModelMapper modelMapper;
 
     private final ChronoUnit truncateDateOfCreation = ChronoUnit.SECONDS;
-
-    @Transactional
-    public TransactionDto createTransaction(Integer userId, Integer accountId, TransactionDto transactionDto) throws IOException {
-
-        Account sourceAccount = null;
-        Account destinationAccount = null;
-
-        String destinationIban = transactionDto.getDestinationIban();
-        Optional<Account> optionalSourceAccount = accountRepository.findById(accountId.longValue());
-
-        boolean ibanIsNotValid = !Iban.validate(destinationIban);
-        boolean sourceBankIsEqualsDestinationBank = Iban.isSourceBankEqualsDestinationBank(destinationIban);
-
-        if(optionalSourceAccount.isEmpty()) {
-            throw new NullPointerException("Account with id " + accountId + " not found");
-        }else{
-            sourceAccount = optionalSourceAccount.get();
-        }
-
-        if(ibanIsNotValid){
-            throw new IOException("Iban is not valid from validation algorithm");
-        }
-
-        if(sourceBankIsEqualsDestinationBank) {
-
-            Optional<Account> optionalDestinationAccount = accountRepository.findByIban(destinationIban);
-            if (optionalDestinationAccount.isEmpty()) {
-                throw new NullPointerException("Account with iban " + destinationIban + " not found");
-            }else{
-                destinationAccount = optionalDestinationAccount.get();
-            }
-
-        }else {
-            //TODO: RESTCALL To Iban Provider
-        }
-
-
-        if(!accountService.validate(destinationAccount, transactionDto.getDestinationName())) {
-            throw new IOException("Iban and user name are not matching");
-        }
-
-        User sourceUser = sourceAccount.getUser();
-
-        String sourceName = sourceUser.getFirstName() + " " + sourceUser.getLastName();
-        String sourceIban = sourceAccount.getIban();
-
-        Transaction transaction = modelMapper.map(transactionDto, Transaction.class);
-
-        transaction.getAccounts().add(sourceAccount);
-        transaction.setDateOfCreation(OffsetDateTime.now().truncatedTo(truncateDateOfCreation));
-        transaction.setSourceName(sourceName);
-        transaction.setSourceIban(sourceIban);
-        transaction = transactionRepository.save(transaction);
-
-        sourceAccount.getTransactions().add(transaction);
-        accountRepository.save(sourceAccount);
-
-        if(sourceBankIsEqualsDestinationBank) {
-            destinationAccount.getTransactions().add(transaction);
-            accountRepository.save(destinationAccount);
-        }
-
-        transactionDto = modelMapper.map(transaction,TransactionDto.class);
-
-        //TODO:Logic FutureTransaction
-        return transactionDto;
-
-    }
 
     @Transactional
     public UserDto createUser(UserDto userDto) throws IOException {
