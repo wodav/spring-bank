@@ -4,6 +4,7 @@ import net.minidev.json.JSONObject;
 import org.openapitools.dto.AccountDto;
 import org.openapitools.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -20,6 +21,12 @@ public class BankApplication implements CommandLineRunner {
 	@Autowired
 	RestTemplate restTemplate;
 
+	@Value("${server.port}")
+	String serverPort; //TODO: Later get uri from iban registry
+
+	@Value("${server.uri}")
+	String serverUri = "http://localhost";
+
 	public static void main(String[] args) {
 		SpringApplication.run(BankApplication.class, args);
 	}
@@ -27,7 +34,7 @@ public class BankApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
-		String uri = "http://localhost:8080";
+		String uri = serverUri+":"+serverPort;
 
 		JSONObject userDto = new JSONObject();
 
@@ -69,8 +76,10 @@ public class BankApplication implements CommandLineRunner {
 
 		response = restTemplate.exchange(uri+"/users/2/accounts", HttpMethod.POST, httpEntity, AccountDto.class);
 
-		JSONObject transactionDto = new JSONObject();
+	/*	JSONObject transactionDto = new JSONObject();
 
+		transactionDto.put("sourceName", "Adam Adams");
+		transactionDto.put("sourceIban", "DE9111111111000004");
 		transactionDto.put("destinationName", "John James");
 		transactionDto.put("destinationIban", "DE9111111111000001");
 		transactionDto.put("amount", 570);
@@ -78,8 +87,10 @@ public class BankApplication implements CommandLineRunner {
 		transactionDto.put("purposeOfUse", "Miete Januar");
 
 		httpEntity = new HttpEntity<>(transactionDto);
-		response = restTemplate.exchange(uri+"/users/2/accounts/4/transactions", HttpMethod.POST, httpEntity, AccountDto.class);
+		response = restTemplate.exchange(uri+"/transactions", HttpMethod.POST, httpEntity, AccountDto.class);
 
+		transactionDto.put("sourceName", "Adam Adams");
+		transactionDto.put("sourceIban", "DE9111111111000004");
 		transactionDto.put("destinationName", "John James");
 		transactionDto.put("destinationIban", "DE9111111111000003");
 		transactionDto.put("amount", 320);
@@ -87,7 +98,7 @@ public class BankApplication implements CommandLineRunner {
 		transactionDto.put("purposeOfUse", "GEZ");
 
 		httpEntity = new HttpEntity<>(transactionDto);
-		response = restTemplate.exchange(uri+"/users/2/accounts/4/transactions", HttpMethod.POST, httpEntity, AccountDto.class);
+		response = restTemplate.exchange(uri+"/transactions", HttpMethod.POST, httpEntity, AccountDto.class);*/
 	}
 
 }

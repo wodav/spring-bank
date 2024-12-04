@@ -43,7 +43,7 @@ public class Iban {
         return true; //Implement algorithm from https://en.wikipedia.org/wiki/International_Bank_Account_Number;
     }
 
-    public static boolean isSourceBankEqualsDestinationBank(String destinationIban) {
+    public static boolean belongsToThisBank(String destinationIban) {
 
         char[] destinationBankChar = new char[12];
         destinationIban.getChars(0,12, destinationBankChar,0);
