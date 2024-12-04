@@ -212,36 +212,6 @@ paths:
           description: no accounts
 
   /users/{user-id}/accounts/{account-id}/transactions:
-    post:
-      tags:
-        - user transactions
-      parameters:
-        - in: path
-          name: user-id
-          schema:
-            type: integer
-          required: true
-        - in: path
-          name: account-id
-          schema:
-            type: integer
-          required: true
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Transaction'
-      responses:
-        "200":
-          description: Created transactions
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Transaction"
-        "204":
-          description: transaction already exists
-        "422":
-          description: Iban is not matching with destination name
     get:
       tags:
         - user transactions
@@ -352,6 +322,25 @@ paths:
           description: user not found
 
   /transactions:
+    post:
+      tags:
+        - user transactions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Transaction'
+      responses:
+        "200":
+          description: Created transactions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Transaction"
+        "204":
+          description: transaction already exists
+        "422":
+          description: Iban is not matching with destination name
     get:
       tags:
         - transactions
@@ -476,6 +465,7 @@ components:
 
     Transaction:
       required:
+        - sourceIban
         - destinationName
         - destinationIban
         - amount
@@ -496,7 +486,8 @@ components:
           readOnly: true
         sourceIban:
           type: string
-          readOnly: true
+          pattern: '\p{L}{2}[0-9]{16}'
+          example: 'DE9111111111000001'
         destinationName:
           type: string
           pattern: '[a-zA-Z\s]+'
