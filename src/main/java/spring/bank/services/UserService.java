@@ -2,9 +2,11 @@ package spring.bank.services;
 
 import org.modelmapper.ModelMapper;
 import org.openapitools.dto.AccountDto;
+import org.openapitools.dto.RoleDto;
 import org.openapitools.dto.TransactionDto;
 import org.openapitools.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,6 +14,7 @@ import spring.bank.calculation.Iban;
 import spring.bank.entities.Account;
 import spring.bank.entities.Transaction;
 import spring.bank.entities.User;
+import spring.bank.mapper.RoleAuthoritiesMapper;
 import spring.bank.repositories.AccountRepository;
 import spring.bank.repositories.TransactionRepository;
 import spring.bank.repositories.UserRepository;
@@ -34,6 +37,9 @@ public class UserService {
     AccountRepository accountRepository;
 
     @Autowired
+    PasswordEncoder passwordEncoder;
+
+    @Autowired
     ModelMapper modelMapper;
 
     private final ChronoUnit truncateDateOfCreation = ChronoUnit.SECONDS;
@@ -41,17 +47,28 @@ public class UserService {
     @Transactional
     public UserDto createUser(UserDto userDto) throws IOException {
 
+        if(userDto.getRole() == null){
+            throw new IOException("Error: User Role must be set!");
+        }
+
         if (userRepository.existsByFirstNameAndLastNameAndDateOfBirth(
                 userDto.getFirstName(),
                 userDto.getLastName(),
                 userDto.getDateOfBirth())) {
-            throw  new IOException("Error: Combination of first name, last name and birth is already taken!");
+            throw new IOException("Error: Combination of first name, last name and birth is already taken!");
         }
         else {
             User user = this.modelMapper.map(userDto,User.class);
+
+            user.setAuthorities(RoleAuthoritiesMapper.getAuthorities(userDto));
             user.setDateOfCreation(OffsetDateTime.now().truncatedTo(truncateDateOfCreation));
+            user.setPassword(passwordEncoder.encode(userDto.getPassword()));
             user = userRepository.save(user);
-            return this.modelMapper.map(user,UserDto.class);
+
+            UserDto dtoResponse = this.modelMapper.map(user,UserDto.class);
+            dtoResponse.setPassword("******");
+            dtoResponse.setRole(RoleAuthoritiesMapper.getRole(user.getAuthorities()));
+            return dtoResponse;
         }
     }
 

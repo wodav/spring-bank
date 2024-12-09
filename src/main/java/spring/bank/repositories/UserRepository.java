@@ -9,6 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-
+    Optional<User> findByNetKey(Integer netKey);
+    Optional<User> findByFirstNameAndLastName(String firstName, String lastName);
     Boolean existsByFirstNameAndLastNameAndDateOfBirth(String firstName, String lastName, LocalDate dateOfBirth);
 }
