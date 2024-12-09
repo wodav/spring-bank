@@ -43,10 +43,22 @@ public class UserController implements UsersApi {
     public ResponseEntity<UserDto> createUser(UserDto userDto){
 
         try {
+
             userDto = userService.createUser(userDto);
+
             return new ResponseEntity<>(userDto,HttpStatus.CREATED);
         } catch (IOException e) {
-            return new ResponseEntity<>(userDto,HttpStatus.CONFLICT);
+            switch (e.getMessage()){
+                case "Error: Combination of first name, last name and birth is already taken!" -> {
+                    return new ResponseEntity<>(userDto,HttpStatus.CONFLICT);
+                }
+                case "Error: User Role must be set!" -> {
+                    return new ResponseEntity<>(userDto,HttpStatus.BAD_REQUEST);
+                }
+                default -> {
+                    return new ResponseEntity<>(null,HttpStatus.NOT_IMPLEMENTED);
+                }
+            }
         }
 
     }

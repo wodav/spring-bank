@@ -3,10 +3,32 @@ info:
   title: Endpoint of EX Bank
   version: v1
 paths:
+  /auth/login:
+      post:
+        tags:
+          - authorization
+        summary: User login
+        operationId: login
+        requestBody:
+          description: Account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Login'
+        responses:
+          "200":
+            description: Login succeed
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Login'
+
   /users:
     get:
       tags:
         - users
+      security:
+        - bearerAuth: [ ]
       summary: Returns a list of users.
       description: Optional extended description in CommonMark or HTML
       responses:
@@ -22,7 +44,7 @@ paths:
           description: no users found
     post:
       tags:
-        - user
+        - users
       summary: Create user
       description: This can only be done by the logged in user.
       operationId: createUser
@@ -44,8 +66,6 @@ paths:
 
   /users/{id}:
     get:
-      tags:
-        - user
       parameters:
         - in: path
           name: id
@@ -63,8 +83,6 @@ paths:
         "204":
           description: user not found
     put:
-      tags:
-        - user
       summary: Update User
       operationId: updateUser
       parameters:
@@ -91,8 +109,6 @@ paths:
         "204":
           description: user not found
     delete:
-      tags:
-        - user
       summary: Delete User
       operationId: deleteUser
       parameters:
@@ -116,8 +132,6 @@ paths:
 
   /users/findByName:
     get:
-      tags:
-        - user
       parameters:
         - in: query
           name: firstName
@@ -143,8 +157,6 @@ paths:
 
   /users/role:
     get:
-      tags:
-        - user
       parameters:
         - in: query
           name: role
@@ -163,8 +175,6 @@ paths:
 
   /users/{id}/accounts:
     post:
-      tags:
-        - user accounts
       summary: Create Account
       operationId: createAccount
       parameters:
@@ -188,8 +198,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Account'
     get:
-      tags:
-        - user accounts
       summary: Returns a list of account.
       parameters:
         - in: path
@@ -213,8 +221,6 @@ paths:
 
   /users/{user-id}/accounts/{account-id}/transactions:
     get:
-      tags:
-        - user transactions
       parameters:
         - in: path
           name: users-id
@@ -258,8 +264,6 @@ paths:
 
   /accounts/{id}:
     get:
-      tags:
-        - account
       summary: Returns account.
       description: Optional extended description in CommonMark or HTML
       responses:
@@ -272,8 +276,6 @@ paths:
         "204":
           description: Account wit id not found
     put:
-      tags:
-        - account
       summary: Update Account
       operationId: updateAccount
       parameters:
@@ -300,8 +302,6 @@ paths:
         "204":
           description: user not found
     delete:
-      tags:
-        - account
       summary: Delete Account
       operationId: deleteAccount
       parameters:
@@ -342,8 +342,6 @@ paths:
         "422":
           description: Iban is not matching with destination name
     get:
-      tags:
-        - transactions
       summary: Returns all transactions
       description: Optional extended description in CommonMark or HTML
       responses:
@@ -359,6 +357,13 @@ paths:
           description: no transactions
 
 components:
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   schemas:
     User:
       required:
@@ -516,6 +521,36 @@ components:
           type: string
           format: date-time
           readOnly: true
+
+    Login:
+      required:
+        - netKey
+        - userName
+        - password
+      properties:
+        token:
+          type: string
+          readOnly: true
+        type:
+          type: string
+          example: Bearer
+          readOnly: true
+        netKey:
+          type: integer
+          minLength: 10
+          maxLength: 10
+          example: 0000000001
+        userName:
+          type: string
+          pattern: '[a-zA-Z\s]+'
+          example: firstname lastname
+        password:
+          type: string
+          writeOnly: true
+          example: 123456789
+        role:
+          $ref: '#/components/schemas/Role'
+
 
 
 

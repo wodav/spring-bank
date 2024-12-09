@@ -33,9 +33,12 @@ public class User {
 
     private Integer userStatus;
 
-    private RoleDto role;
+    private String authorities;
 
     private OffsetDateTime dateOfCreation;
+
+    private Integer netKey;
+
 
     public Long getId() {
         return id;
@@ -93,12 +96,12 @@ public class User {
         this.userStatus = userStatus;
     }
 
-    public RoleDto getRole() {
-        return role;
+    public String getAuthorities() {
+        return authorities;
     }
 
-    public void setRole(RoleDto role) {
-        this.role = role;
+    public void setAuthorities(String authorities) {
+        this.authorities = authorities;
     }
 
     public LocalDate getDateOfBirth() {
@@ -123,5 +126,13 @@ public class User {
 
     public void setAccounts(List<Account> accounts) {
         this.accounts = accounts;
+    }
+
+    public Integer getNetKey() {
+        return netKey;
+    }
+
+    public void setNetKey(Integer netKey) {
+        this.netKey = netKey;
     }
 }
